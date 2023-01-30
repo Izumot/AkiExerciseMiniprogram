@@ -1,0 +1,7 @@
+/* pages/fav/fav.wxss */
+page {
+  --td-button-danger-bg-color: #00a870; 
+  --td-button-danger-border-color: #00a870;
+  --td-button-danger-active-bg-color: #008f5f;
+  --td-button-danger-active-border-color: #008f5f;
+}

@@ -1,0 +1,2 @@
+<!--pages/material/material.wxml-->
+<t-fab style="" button-props="{{ {theme:\"danger\"} }}" icon="check"></t-fab>

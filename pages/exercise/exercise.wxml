@@ -1,0 +1,48 @@
+<!--pages/exercise/exercise.wxml-->
+<view class="page" bindtouchstart="handleTouchStart" bindtouchend="handleTouchEnd" bindtouchmove="handleTouchMove">
+  <view class="page_wrapper">
+    <t-tag variant="light" theme="{{tag_theme[questions[cur].type]}}">{{questions[cur].type}}</t-tag>
+    <text wx:if="{{!loading}}">{{(cur+1)+"/"+questions.length}}</text>
+    <t-progress percentage="{{((cur+1)/(questions.length)*100)|Int}}"></t-progress>
+    <view class="content_wrapper">
+      <t-skeleton theme="paragraph" animation="gradient" loading="{{loading}}">
+        <text>{{questions[cur].content}}</text>
+      </t-skeleton>
+    </view>
+  </view>
+  <view class="option_wrapper">
+    <!--单选、判断-->
+    <t-radio-group wx:if="{{questions[cur].type=='单选题' || questions[cur].type=='判断题'}}" value="{{userUnswer[cur][0]}}" t-class="theme-card" bind:change="onRadioChange">
+      <view wx:for="{{questions[cur].options}}" wx:for-item="option" wx:key="index">
+        <t-radio value="{{index}}" label="{{option}}" icon="dot" />
+      </view>
+    </t-radio-group>
+    <!--多选-->
+    <t-checkbox-group wx:if="{{questions[cur].type=='多选题'}}" value="{{userUnswer[cur]}}" t-class="theme-card" bind:change="onCheckBoxChange">
+      <view wx:for="{{questions[cur].options}}" wx:for-item="option" wx:key="index">
+        <t-checkbox value="{{index}}" label="{{option}}" icon="rectangle" />
+      </view>
+    </t-checkbox-group>
+    <!--填空题-->
+    <block wx:if="{{questions[cur].type=='填空题'}}" wx:for="{{questions[cur].options}}" wx:for-item="option" wx:key="index">
+      <t-input t-class="theme-card" label="{{'第'+(index+1)+'空'}}"  placeholder="请输入" maxlength="{{option[1]}}" suffix="{{'/'+option[1]}}" clearable></t-input>
+    </block>
+  </view>
+  <block wx:if="{{!loading}}">
+  <!--提交-->
+  <t-fab wx:if="{{(cur+1)===questions.length}}" bind:click="handleClickSubmit" button-props="{{{theme:'danger', icon:'check'} }}"></t-fab>
+  <!--下一题-->
+  <t-fab wx:else="{{(cur+1)===questions.length}}" icon="arrow-right" bind:click="handleClickNext"></t-fab>
+  </block>
+</view>
+<!--弹出层题目列表-->
+<t-popup visible="{{popup_visible}}" bind:visible-change="onVisibleChange" placement="bottom">
+  <view class="popup_block">
+    <view class="popup_header">
+      <view class="popup_title">题目</view>
+    </view>
+    <view class="slider_wrapper">
+    <t-slider min="{{1}}" max="{{questions.length}}" value="{{cur+1}}" label="{{cur+1}}" bind:change="handleSliderChange"></t-slider>
+    </view>
+  </view>
+</t-popup>

@@ -1,0 +1,21 @@
+<!--pages/home/home.wxml-->
+<view class="progress_wrapper">
+<t-progress percentage="80" />
+<t-progress percentage="88" status="warning" />
+<t-progress percentage="88" status="error" />
+
+</view>
+<t-cell-group theme="card" title="练习">
+  <t-cell title="每日答题" leftIcon="service" url="/pages/exercise/exercise?qid=1,2,3,4,5" hover arrow />
+  <t-cell title="每周测评" leftIcon="service" url="/pages/exercise/exercise?tid=100" hover arrow />
+  <t-cell title="专项答题" leftIcon="internet" url="/pages/topic/topic" jump-type="switchTab" hover arrow />
+</t-cell-group>
+
+<t-collapse theme="card" defaultValue="{{[0]}}" expandMutex expandIcon>
+  <t-collapse-panel header="练习统计" value="{{0}}"> 
+    <t-progress style="display: inline-flex;" theme="circle" percentage="12" status="success" />
+    <text style="display: inline-flex;">
+    答题正确率：12%
+    </text>
+  </t-collapse-panel>
+</t-collapse>

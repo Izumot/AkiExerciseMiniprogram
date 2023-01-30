@@ -1,0 +1,30 @@
+<!--pages/mine/mine.wxml-->
+<view>
+  <t-cell bindtap="handlePopup" hover arrow>
+    <view class="nickname" slot="title">{{nickName}}</view>
+    <view class="uid" slot="description">{{"uid: "+uid}}</view>
+    <view slot="left-icon">
+      <t-avatar size="large" class="avatar-example" t-class-content="external-class-content">{{nickName[0]}}</t-avatar>
+    </view>
+  </t-cell>
+</view>
+<view>
+  <t-cell-group title="个人">
+    <t-cell title="收藏题目" leftIcon="star" hover arrow />
+    <t-cell title="练习历史" leftIcon="history" hover arrow />
+  </t-cell-group>
+  <t-cell-group title="设置">
+    <t-cell title="单行标题" leftIcon="internet" hover arrow />
+    <t-cell title="单行标题" leftIcon="lock-on" hover arrow />
+  </t-cell-group>
+</view>
+<t-popup visible="{{visible}}" bind:visible-change="onVisibleChange" placement="bottom">
+  <view class="block">
+    <view class="header">
+      <view class="btn btn--cancel" bindtap="onPopupCancelTap">取消</view>
+      <view class="title">修改昵称</view>
+      <view class="btn btn--confirm" bindtap="onPopupConfirmTap">确定</view>
+    </view>
+    <t-input confirm-type="done" type="nickname" maxlength="5" bind:blur="onInputBlur" label="昵称" layout="vertical" placeholder="请输入5个字以内的昵称" clearable></t-input>
+  </view>
+</t-popup>

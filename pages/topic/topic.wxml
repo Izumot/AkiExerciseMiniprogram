@@ -1,0 +1,18 @@
+<!--pages/topic/topic.wxml-->
+<t-tabs
+  defaultValue="{{0}}"
+  sticky
+  bind:change="onTabsChange"
+  bind:click="onTabsClick"
+  t-class="custom-tabs"
+>
+<view wx:for="{{subjects}}" wx:for-item="subject" wx:key="index">
+  <t-tab-panel label="{{subject.type}}" value="{{index}}" >
+
+    <t-cell-group wx:for="{{subject.topics}}" wx:for-item="topic" wx:key="tid">
+      <t-cell title="{{topic.title}}" description="{{topic.time}}" hover arrow />
+    </t-cell-group>
+  </t-tab-panel>
+</view>
+</t-tabs>
+

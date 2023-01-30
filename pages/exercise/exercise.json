@@ -1,0 +1,15 @@
+{
+  "navigationBarTitleText": "练习",
+  "usingComponents": {
+    "t-tag": "tdesign-miniprogram/tag/tag",
+    "t-progress": "tdesign-miniprogram/progress/progress",
+    "t-skeleton": "tdesign-miniprogram/skeleton/skeleton",
+    "t-radio": "tdesign-miniprogram/radio/radio",
+    "t-radio-group": "tdesign-miniprogram/radio-group/radio-group",
+    "t-checkbox": "tdesign-miniprogram/checkbox/checkbox",
+    "t-checkbox-group": "tdesign-miniprogram/checkbox-group/checkbox-group",
+    "t-fab": "tdesign-miniprogram/fab/fab",
+    "t-input": "tdesign-miniprogram/input/input",
+    "t-slider": "tdesign-miniprogram/slider/slider"
+  }
+}
