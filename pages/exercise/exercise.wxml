@@ -11,10 +11,16 @@
     </view>
   </view>
   <view class="option_wrapper">
-    <!--单选、判断-->
-    <t-radio-group wx:if="{{questions[cur].type=='单选题' || questions[cur].type=='判断题'}}" value="{{userUnswer[cur][0]}}" t-class="theme-card" bind:change="onRadioChange">
+    <!--单选-->
+    <t-radio-group wx:if="{{questions[cur].type=='单选题'}}" value="{{userUnswer[cur][0]}}" t-class="theme-card" bind:change="onRadioChange">
       <view wx:for="{{questions[cur].options}}" wx:for-item="option" wx:key="index">
         <t-radio value="{{index}}" label="{{option}}" icon="dot" />
+      </view>
+    </t-radio-group>
+    <!--判断-->
+    <t-radio-group wx:if="{{questions[cur].type=='判断题'}}" value="{{userUnswer[cur][0]}}" t-class="theme-card" bind:change="onJudgeChange">
+      <view wx:for="{{questions[cur].options}}" wx:for-item="option" wx:key="index">
+        <t-radio value="{{index}}" label="{{option}}" />
       </view>
     </t-radio-group>
     <!--多选-->
@@ -25,24 +31,33 @@
     </t-checkbox-group>
     <!--填空题-->
     <block wx:if="{{questions[cur].type=='填空题'}}" wx:for="{{questions[cur].options}}" wx:for-item="option" wx:key="index">
-      <t-input t-class="theme-card" label="{{'第'+(index+1)+'空'}}"  placeholder="请输入" maxlength="{{option[1]}}" suffix="{{'/'+option[1]}}" clearable></t-input>
+      <t-input data-index="{{index}}" t-class="theme-card" label="{{'第'+(index+1)+'空'}}" placeholder="请输入" maxlength="{{option[1]}}" suffix="{{'/'+option[1]}}" value="{{userUnswer[cur][index]}}" bind:change="onInputChange" clearable></t-input>
     </block>
   </view>
   <block wx:if="{{!loading}}">
-  <!--提交-->
-  <t-fab wx:if="{{(cur+1)===questions.length}}" bind:click="handleClickSubmit" button-props="{{{theme:'danger', icon:'check'} }}"></t-fab>
-  <!--下一题-->
-  <t-fab wx:else="{{(cur+1)===questions.length}}" icon="arrow-right" bind:click="handleClickNext"></t-fab>
+    <!--提交-->
+    <t-fab wx:if="{{(cur+1)===questions.length}}" bind:click="handleClickSubmit" button-props="{{{theme:'danger', icon:'check'} }}"></t-fab>
+    <!--下一题-->
+    <t-fab wx:else="{{(cur+1)===questions.length}}" icon="arrow-right" bind:click="handleClickNext"></t-fab>
   </block>
 </view>
-<!--弹出层题目列表-->
+<!--题目列表弹出层-->
 <t-popup visible="{{popup_visible}}" bind:visible-change="onVisibleChange" placement="bottom">
   <view class="popup_block">
     <view class="popup_header">
       <view class="popup_title">题目</view>
     </view>
     <view class="slider_wrapper">
-    <t-slider min="{{1}}" max="{{questions.length}}" value="{{cur+1}}" label="{{cur+1}}" bind:change="handleSliderChange"></t-slider>
+      <t-slider min="{{1}}" max="{{questions.length}}" value="{{cur+1}}" label="{{cur+1}}" bind:change="handleSliderChange"></t-slider>
     </view>
   </view>
 </t-popup>
+<!--答案不完整对话框-->
+<t-dialog
+  visible="{{dialog_visible}}"
+  content="答案不完整，确认提交吗"
+  confirm-btn="{{ {content: '确定', variant: 'base'} }}"
+  cancel-btn="取消"
+  bind:confirm="confirmDialog"
+  bind:cancel="cancelDialog"
+/>

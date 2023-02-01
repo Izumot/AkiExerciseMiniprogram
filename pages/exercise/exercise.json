@@ -10,6 +10,7 @@
     "t-checkbox-group": "tdesign-miniprogram/checkbox-group/checkbox-group",
     "t-fab": "tdesign-miniprogram/fab/fab",
     "t-input": "tdesign-miniprogram/input/input",
-    "t-slider": "tdesign-miniprogram/slider/slider"
+    "t-slider": "tdesign-miniprogram/slider/slider",
+    "t-dialog": "tdesign-miniprogram/dialog/dialog"
   }
 }
