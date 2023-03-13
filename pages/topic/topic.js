@@ -1,18 +1,12 @@
+const {topicApi} = require("../../api/index")
 
-// pages/material/material.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    // subjects: {}
-    subjects: [
-      {"type": "网络安全","topics":[{"tid":1,"title":"网络安全法知识测评","time":"2022/12/23"},{"tid":2,"title":"2021网络安全知识竞赛","time":"2023/01/27"}]},
-      {"type": "时事热点","topics":[{"tid":3,"title":"习近平主席二〇二三年新年贺词","time":"2022/12/31"}]},
-      {"type": "周测","topics":[{"tid":4,"title":"2023第一周周测","time":"2023/01/01"}]},
-      {"type": "其他","topics":[{"tid":5,"title":"测试","time":"2022/12/24"}]}
-    ]
+    categorys : [],
   },
   onTabsChange(event) {
     console.log(`Change tab, tab-panel value is ${event.detail.value}.`);
@@ -27,15 +21,11 @@ Page({
    */
   onLoad(options) {
     this.getTabBar().init()
-    let that = this
-    wx.request({
-      url: 'https://api.aki.codes/subjects',
-      method: "GET",
-      success(res) {
-        let subjects = res.data.subjects
-        that.setData({subjects: subjects})
-        wx.setStorageSync('subjects', subjects)
-      }
+    topicApi.readTopics().then(res => {
+        console.log(res)
+        this.setData({
+          categorys: res
+        })
     })
   },
 
@@ -50,14 +40,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    this.getTabBar().init()
-    let that = this
-    wx.getStorage({"key":"subjects",success(res) {
-        console.log(res)
-        that.setData({
-          subjects: res.data
-        })
-    }})
+
   },
 
   /**

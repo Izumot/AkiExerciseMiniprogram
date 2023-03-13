@@ -25,6 +25,6 @@
       <view class="title">修改昵称</view>
       <view class="btn btn--confirm" bindtap="onPopupConfirmTap">确定</view>
     </view>
-    <t-input confirm-type="done" type="nickname" maxlength="5" bind:blur="onInputBlur" label="昵称" layout="vertical" placeholder="请输入5个字以内的昵称" clearable></t-input>
+    <t-input maxlength="10" bind:blur="onInputBlur" bind:clear="onInputClear" label="昵称" layout="vertical" placeholder="请输入10个字以内的昵称" clearable></t-input>
   </view>
 </t-popup>

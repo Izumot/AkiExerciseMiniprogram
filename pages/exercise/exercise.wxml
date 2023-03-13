@@ -31,7 +31,7 @@
     </t-checkbox-group>
     <!--填空题-->
     <block wx:if="{{questions[cur].type=='填空题'}}" wx:for="{{questions[cur].options}}" wx:for-item="option" wx:key="index">
-      <t-input data-index="{{index}}" t-class="theme-card" label="{{'第'+(index+1)+'空'}}" placeholder="请输入" maxlength="{{option[1]}}" suffix="{{'/'+option[1]}}" value="{{userUnswer[cur][index]}}" bind:change="onInputChange" clearable></t-input>
+      <t-input data-index="{{index}}" t-class="theme-card" label="{{'第'+(index+1)+'空'}}" placeholder="请输入" maxlength="{{option[1]}}" suffix="{{'/'+option[1]}}" value="{{userUnswer[cur][index]}}" bind:change="onInputChange" bind:clear="onInputClear" clearable></t-input>
     </block>
   </view>
   <block wx:if="{{!loading}}">

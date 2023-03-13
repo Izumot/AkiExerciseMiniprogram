@@ -6,11 +6,11 @@
   bind:click="onTabsClick"
   t-class="custom-tabs"
 >
-<view wx:for="{{subjects}}" wx:for-item="subject" wx:key="index">
-  <t-tab-panel label="{{subject.type}}" value="{{index}}" >
+<view wx:for="{{categorys}}" wx:for-item="category" wx:key="index">
+  <t-tab-panel label="{{category.category_name}}" value="{{category.category_id}}" >
 
-    <t-cell-group wx:for="{{subject.topics}}" wx:for-item="topic" wx:key="tid">
-      <t-cell title="{{topic.title}}" description="{{topic.time}}" hover arrow />
+    <t-cell-group wx:for="{{category.topics}}" wx:for-item="topic">
+      <t-cell title="{{topic.topic_name}}" description="{{topic.create_time}}" url="/pages/exercise/exercise?topic_id={{topic.topic_id}}" hover arrow />
     </t-cell-group>
   </t-tab-panel>
 </view>

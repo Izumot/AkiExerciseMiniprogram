@@ -1,5 +1,9 @@
 // pages/mine/mine.js
 
+const {
+  userApi
+} = require("../../api/index");
+
 Page({
   data: {
     uid: null,
@@ -9,20 +13,31 @@ Page({
     inputValue: null,
   },
   handlePopup(e) {
-    const { item } = e.currentTarget.dataset;
+    const {
+      item
+    } = e.currentTarget.dataset;
     console.log(e)
-    this.setData(
-      {
+    this.setData({
         cur: item,
       },
       () => {
-        this.setData({ visible: true });
+        this.setData({
+          visible: true
+        });
       },
     );
   },
   onInputBlur(e) {
     console.log(e)
-    this.setData({inputValue: e.detail.value})
+    this.setData({
+      inputValue: e.detail.value
+    })
+  },
+  onInputClear(e) {
+    console.log(e)
+    this.setData({
+      inputValue: null
+    })
   },
   onVisibleChange(e) {
     this.setData({
@@ -31,47 +46,52 @@ Page({
     });
   },
   onPopupCancelTap(e) {
-    this.setData({visible: false, inputValue: null})
+    this.setData({
+      visible: false,
+      inputValue: null
+    })
   },
-  onPopupConfirmTap(e){
+  onPopupConfirmTap(e) {
     let inputValue = this.data.inputValue
-    if(inputValue) {
-      this.setData({nickName: inputValue})
+    if (inputValue) {
+      let nickname = inputValue
+      
+      userApi.updateUserMe(nickname).then(res => {
+        console.log("update nickname success!")
+        console.log(res)
+        this.setData({
+          nickName: res.nickname
+        })
+      }).catch(err => {
+        console.log(err)
+      })
     }
-    this.setData({visible: false, inputValue: null})
+    this.setData({
+      visible: false,
+      inputValue: null
+    })
   },
   onShow() {
     this.getTabBar().init()
-    let that = this
-    wx.getStorage({
-      key: "nickName",
-      success(res) {
-        console.log(res)
-        that.setData({
-          nickName: res.data
-        })
-      }
-    })
-    wx.getStorage({
-      key: "uid",
-      success(res) {
-        console.log(res)
-        that.setData({
-          uid: res.data
-        })
-      }
-    })
+
   },
   onLoad(options) {
-    
+    userApi.readUserMe().then(res => {
+      console.log(res)
+      this.setData({
+        uid: res.user_id,
+        nickName: res.nickname
+      })
+    }).catch(err => {
+      console.log(err)
+    })
+
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide() {
-    wx.setStorageSync("nickName", this.data.nickName)
-  },
+  onHide() {},
 
   /**
    * 生命周期函数--监听页面卸载
@@ -82,7 +102,7 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh() {
-    
+
   },
 
   /**

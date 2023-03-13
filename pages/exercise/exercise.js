@@ -154,6 +154,14 @@ Page({
       [[unswer]]: e.detail.value
     })
   },
+  onInputClear(e) {
+    console.log("input clear: ", e.currentTarget.dataset)
+    let index = e.currentTarget.dataset.index
+    let unswer = "userUnswer["+this.data.cur+"]["+index+"]"
+    this.setData({
+      [[unswer]]: ''
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -161,9 +169,9 @@ Page({
     console.log(options)
     let that = this
     // 专题调用
-    if (options.tid) {
+    if (options.topic_id) {
       wx.request({
-        url: 'https://api.aki.codes/questions?tid=' + options.tid,
+        url: 'https://api.aki.codes/questions?tid=' + options.topic_id,
         method: "GET",
         success(res) {
           let questions = res.data.questions

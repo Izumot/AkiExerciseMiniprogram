@@ -1,27 +1,29 @@
 // app.js
 
+const {
+  userApi
+} = require('./api/index')
+
 App({
   onLaunch() {
     // 登录
-    wx.login({
-      timeout: 2000,
-      success(res) {
-        console.log(res)
-        let code = res.code
-        wx.request({
-          url: 'https://api.aki.codes/login',
-          method: "POST",
-          data: { code: code},
-          success(res) {
-            console.log(res)
-            wx.setStorageSync('uid', res.data.uid)
-            wx.setStorageSync('nickName', res.data.nickName)
-          }
-        })
-      }
-    })
+    // wx.login({
+    //   success: (res) => {
+    //     console.log(res)
+    //     let code = res.code
+    //     wx.request({
+    //       url: `http://127.0.0.1:8000/login?code=${code}`,
+    //       method: 'GET',
+    //       success: (res) => {
+    //         console.log(res)
+    //         this.globalData.token = res.data
+    //       }
+    //     })
+    //   },
+    // })
   },
+
   globalData: {
-    
+    token: ''
   }
 })
