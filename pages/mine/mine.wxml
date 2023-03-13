@@ -11,7 +11,7 @@
 <view>
   <t-cell-group title="个人">
     <t-cell title="收藏题目" leftIcon="star" hover arrow />
-    <t-cell title="练习历史" leftIcon="history" hover arrow />
+    <t-cell title="练习历史" leftIcon="history" url="/pages/history/history" jump-type="switchTab" hover arrow />
   </t-cell-group>
   <t-cell-group title="设置">
     <t-cell title="单行标题" leftIcon="internet" hover arrow />

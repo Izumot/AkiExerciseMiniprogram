@@ -1,4 +1,13 @@
 /* pages/home/home.wxss */
+page {
+  width: 750rpx;
+  height: 1200rpx;
+  padding-bottom: 600rpx;
+
+  display: block;
+  box-sizing: border-box
+}
+
 .progress_wrapper {
   padding: 32rpx;
 }

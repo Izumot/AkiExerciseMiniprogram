@@ -1,4 +1,11 @@
 <!--pages/topic/topic.wxml-->
+<wxs module="fn">
+  module.exports = {
+    time2str: function(time) {
+      return time.split('T')[0] + ' ' + time.split('T')[1].split('.')[0]
+    }
+  }
+</wxs>
 <t-tabs
   defaultValue="{{0}}"
   sticky
@@ -10,7 +17,7 @@
   <t-tab-panel label="{{category.category_name}}" value="{{category.category_id}}" >
 
     <t-cell-group wx:for="{{category.topics}}" wx:for-item="topic">
-      <t-cell title="{{topic.topic_name}}" description="{{topic.create_time}}" url="/pages/exercise/exercise?topic_id={{topic.topic_id}}" hover arrow />
+      <t-cell title="{{topic.topic_name}}" description="{{fn.time2str(topic.create_time)}}" url="/pages/exercise/exercise?topic_id={{topic.topic_id}}" hover arrow />
     </t-cell-group>
   </t-tab-panel>
 </view>

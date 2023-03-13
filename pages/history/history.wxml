@@ -1,0 +1,16 @@
+<!--pages/history/history.wxml-->
+<wxs module="fn">
+  module.exports = {
+    time2str: function(time) {
+      return time.split('T')[0] + ' ' + time.split('T')[1].split('.')[0]
+    }
+  }
+</wxs>
+<t-cell-group wx:for="{{quizzes}}" wx:for-item="quiz">
+  <t-swipe-cell bidn:click="onQuizClick">
+  <t-cell title="{{quiz.quiz_name}}" description="{{fn.time2str(quiz.start_time)}}" note="{{quiz.end_time?'':'继续答题'}}" bordered="{{false}}" hover arrow/>
+  <view slot="right" class="btn delete-btn" bind:tap="onDelete">
+  <t-icon name="delete" size="48rpx"></t-icon>
+  </view>
+</t-swipe-cell>
+</t-cell-group>

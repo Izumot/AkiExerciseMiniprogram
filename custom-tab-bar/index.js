@@ -4,8 +4,8 @@ Component({
     value: 0,
     tabBar: [
       {url: '/pages/home/home', icon: 'home', ariaLabel: '首页' },
-      {url: '/pages/topic/topic', icon: 'books', ariaLabel: '专题' },
-      {url: '/pages/material/material', icon: 'file', ariaLabel: '资料' },
+      {url: '/pages/topic/topic', icon: 'layers', ariaLabel: '专题' },
+      {url: '/pages/history/history', icon: 'history', ariaLabel: '历史' },
       {url: '/pages/mine/mine', icon: 'user', ariaLabel: '我的' },
     ],
   },

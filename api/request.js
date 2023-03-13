@@ -1,15 +1,10 @@
 // 引入状态码statusCode
 const statusCode = require('./statusCode')
 // 定义请求路径, BASEURL: 普通请求API; CBASEURL: 中台API,不使用中台可不引入CBASEURL
-const { BASEURL } = require('./config')
-import Message from 'tdesign-miniprogram/message/index';
+const {
+  BASEURL
+} = require('./config')
 
-// 定义默认参数
-const defaultOptions = {
-  data: {},
-  ignoreToken: false,
-  form: false,
-}
 /**
  * 发送请求
  * @params
@@ -19,9 +14,14 @@ const defaultOptions = {
  * ignoreToken: <Boolean> 是否忽略token验证
  * form: <Boolean> 是否使用formData请求
  */
-function request (options) {
-  let _options = Object.assign(defaultOptions, options)
-  let { method, url, data, ignoreToken, form } = _options
+function request(options) {
+  let {
+    method,
+    url,
+    data,
+    ignoreToken,
+    form
+  } = options
   const app = getApp()
   // 设置请求头
   let header = {}
@@ -41,13 +41,16 @@ function request (options) {
   }
 
   return new Promise((resolve, reject) => {
+    console.log('request', url,data);
     wx.request({
-      url: BASEURL + url,
       data,
+      url: BASEURL + url,
       header,
       method,
       success: (res) => {
-        let { statusCode: code } = res
+        let {
+          statusCode: code
+        } = res
         if (code === statusCode.SUCCESS) {
           resolve(res.data)
         } else if (code === statusCode.EXPIRE) {
@@ -69,7 +72,7 @@ function request (options) {
 }
 
 // 封装toast函数
-function showToast (title, icon='none', duration=2500, mask=false) {
+function showToast(title, icon = 'none', duration = 2500, mask = false) {
   wx.showToast({
     title: title || '',
     icon,
@@ -78,14 +81,15 @@ function showToast (title, icon='none', duration=2500, mask=false) {
   });
 }
 
-function get (options) {
+function get(options) {
+  console.log("get :", options)
   return request({
     method: 'GET',
     ...options
   })
 }
 
-function post (options) {
+function post(options) {
   // url, data = {}, ignoreToken, form
   return request({
     method: 'POST',
@@ -93,19 +97,23 @@ function post (options) {
   })
 }
 
-function put (options) {
+function put(options) {
   return request({
     method: 'PUT',
     ...options
   })
 }
 
-function del (options) {
+function del(options) {
   return request({
     method: 'DELETE',
     ...options
   })
 }
 module.exports = {
-  request, get, post, put, del
+  request,
+  get,
+  post,
+  put,
+  del
 }

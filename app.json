@@ -3,6 +3,7 @@
     "pages/home/home",
     "pages/mine/mine",
     "pages/topic/topic",
+    "pages/history/history",
     "pages/material/material",
     "pages/exercise/exercise"
   ],
@@ -36,7 +37,8 @@
     "t-loading": "tdesign-miniprogram/loading/loading",
     "t-input": "tdesign-miniprogram/input/input",
     "t-slider": "tdesign-miniprogram/slider/slider",
-    "t-message": "tdesign-miniprogram/message/message"
+    "t-message": "tdesign-miniprogram/message/message",
+    "t-swipe-cell": "tdesign-miniprogram/swipe-cell/swipe-cell"
   },
   "window": {
     "backgroundTextStyle": "light",
@@ -61,8 +63,8 @@
         "text": "专题"
       },
       {
-        "pagePath": "pages/material/material",
-        "text": "资料"
+        "pagePath": "pages/history/history",
+        "text": "历史"
       },
       {
         "pagePath": "pages/mine/mine",

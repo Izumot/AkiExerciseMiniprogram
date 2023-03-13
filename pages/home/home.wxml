@@ -1,9 +1,15 @@
 <!--pages/home/home.wxml-->
+<view class="page" >
 <view class="progress_wrapper">
   <t-progress style="display: inline-flex;" theme="circle" percentage="12" status="success" />
 </view>
+
 <t-cell-group theme="card" title="练习">
-  <t-cell title="每日答题" leftIcon="service" url="/pages/exercise/exercise?qid=1,2,3,4,5" hover arrow />
-  <t-cell title="每周测评" leftIcon="service" url="/pages/exercise/exercise?topic_id=1" hover arrow />
-  <t-cell title="专项答题" leftIcon="internet" url="/pages/topic/topic" jump-type="switchTab" hover arrow />
+  <t-cell title="每日答题" leftIcon="tips" url="/pages/exercise/exercise?daily_num={{daily_num}}" hover arrow />
+  <t-cell title="每周测评" leftIcon="flag" url="/pages/exercise/exercise?topic_id=1" hover arrow />
+  <t-cell title="专项答题" leftIcon="layers" url="/pages/topic/topic" jump-type="switchTab" hover arrow />
 </t-cell-group>
+<t-cell-group theme="card" title="测试">
+  <t-cell title="测试" leftIcon="tips" url="/pages/material/material" hover arrow />
+</t-cell-group>
+</view>

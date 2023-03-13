@@ -1,27 +1,32 @@
-// pages/home/home.js
+// pages/history/history.js
+const { quizApi } = require("../../api/index");
 
-const { userApi } = require("../../api/index")
-const app = getApp()
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    daily_num: app.globalData.DAILY_NUM
+    quizzes: []
+  },
+  transTime(str){
+    let list = str.split('T')
+    let timestr = list[0] + list[1].split()[0]
+    console.log(timestr)
+    return timestr
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady() {
-    
+ 
   },
 
   /**
@@ -29,6 +34,12 @@ Page({
    */
   onShow() {
     this.getTabBar().init()
+    quizApi.readQuizzes().then(res => {
+      console.log(res)
+      this.setData({
+        quizzes: res
+      })
+    })
   },
 
   /**
