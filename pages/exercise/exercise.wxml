@@ -1,37 +1,37 @@
 <!--pages/exercise/exercise.wxml-->
 <view class="page" bindtouchstart="handleTouchStart" bindtouchend="handleTouchEnd" bindtouchmove="handleTouchMove">
   <view class="page_wrapper">
-    <t-tag variant="light" theme="{{tag_theme[questions[cur].type]}}">{{questions[cur].type}}</t-tag>
+    <t-tag variant="light" theme="{{tag_theme[questions[cur].type_id]}}">{{questions[cur].type.type_name}}</t-tag>
     <text wx:if="{{!loading}}">{{(cur+1)+"/"+questions.length}}</text>
     <t-progress percentage="{{((cur+1)/(questions.length)*100)|Int}}"></t-progress>
     <view class="content_wrapper">
       <t-skeleton theme="paragraph" animation="gradient" loading="{{loading}}">
-        <text>{{questions[cur].content}}</text>
+        <text>{{questions[cur].question_content}}</text>
       </t-skeleton>
     </view>
   </view>
   <view class="option_wrapper">
     <!--单选-->
-    <t-radio-group wx:if="{{questions[cur].type=='单选题'}}" value="{{userUnswer[cur][0]}}" t-class="theme-card" bind:change="onRadioChange">
-      <view wx:for="{{questions[cur].options}}" wx:for-item="option" wx:key="index">
+    <t-radio-group wx:if="{{questions[cur].type_id==0}}" value="{{userUnswer[cur][0]}}" t-class="theme-card" bind:change="onRadioChange">
+      <view wx:for="{{[questions[cur].option_a,questions[cur].option_b,questions[cur].option_c,questions[cur].option_d]}}" wx:for-item="option" wx:key="index">
         <t-radio value="{{index}}" label="{{option}}" icon="dot" />
       </view>
     </t-radio-group>
-    <!--判断-->
-    <t-radio-group wx:if="{{questions[cur].type=='判断题'}}" value="{{userUnswer[cur][0]}}" t-class="theme-card" bind:change="onJudgeChange">
-      <view wx:for="{{questions[cur].options}}" wx:for-item="option" wx:key="index">
-        <t-radio value="{{index}}" label="{{option}}" />
-      </view>
-    </t-radio-group>
     <!--多选-->
-    <t-checkbox-group wx:if="{{questions[cur].type=='多选题'}}" value="{{userUnswer[cur]}}" t-class="theme-card" bind:change="onCheckBoxChange">
-      <view wx:for="{{questions[cur].options}}" wx:for-item="option" wx:key="index">
+    <t-checkbox-group wx:if="{{questions[cur].type_id==1}}" value="{{userUnswer[cur]}}" t-class="theme-card" bind:change="onCheckBoxChange">
+      <view wx:for="{{[questions[cur].option_a,questions[cur].option_b,questions[cur].option_c,questions[cur].option_d]}}" wx:for-item="option" wx:key="index">
         <t-checkbox value="{{index}}" label="{{option}}" icon="rectangle" />
       </view>
     </t-checkbox-group>
+    <!--判断-->
+    <t-radio-group wx:if="{{questions[cur].type_id==2}}" value="{{userUnswer[cur][0]}}" t-class="theme-card" bind:change="onJudgeChange">
+      <view wx:for="{{[questions[cur].option_a,questions[cur].option_b]}}" wx:for-item="option" wx:key="index">
+        <t-radio value="{{index}}" label="{{option}}" />
+      </view>
+    </t-radio-group>
     <!--填空题-->
-    <block wx:if="{{questions[cur].type=='填空题'}}" wx:for="{{questions[cur].options}}" wx:for-item="option" wx:key="index">
-      <t-input data-index="{{index}}" t-class="theme-card" label="{{'第'+(index+1)+'空'}}" placeholder="请输入" maxlength="{{option[1]}}" suffix="{{'/'+option[1]}}" value="{{userUnswer[cur][index]}}" bind:change="onInputChange" bind:clear="onInputClear" clearable></t-input>
+    <block wx:if="{{questions[cur].type_id==3}}" wx:for="{{[questions[cur].option_a,questions[cur].option_b,questions[cur].option_c,questions[cur].option_d]}}" wx:for-item="option" wx:key="index">
+      <t-input wx:if="{{option}}" data-index="{{index}}" t-class="theme-card" label="{{'第'+(index+1)+'空'}}" placeholder="请输入" maxlength="{{option|Int}}" suffix="{{'/'+option}}" value="{{userUnswer[cur][index]}}" bind:change="onInputChange" bind:clear="onInputClear" clearable></t-input>
     </block>
   </view>
   <block wx:if="{{!loading}}">

@@ -1,3 +1,5 @@
+const { questionApi } = require("../../api/index");
+
 // pages/exercise/exercise.js
 Page({
   
@@ -6,7 +8,8 @@ Page({
    */
   data: {
     cur: 0,
-    tid: null,
+    topic_id: null,
+    quiz_id: null,
     loading: true,
     popup_visible: false,
     dialog_visible: false,
@@ -14,12 +17,7 @@ Page({
     touchE : null,
     questions: [],
     userUnswer: [],
-    tag_theme: {
-      "单选题": "primary",
-      "多选题": "warning",
-      "判断题": "danger",
-      "填空题": "success"
-    },
+    tag_theme: ["primary","warning","danger","success"]
   },
   onVisibleChange(e) {
     this.setData({
@@ -92,6 +90,7 @@ Page({
   },
   submit() {
     console.log("submit")
+    //
   },
   confirmDialog(e) {
     this.setData({
@@ -167,21 +166,18 @@ Page({
    */
   onLoad(options) {
     console.log(options)
-    let that = this
     // 专题调用
     if (options.topic_id) {
-      wx.request({
-        url: 'https://api.aki.codes/questions?tid=' + options.topic_id,
-        method: "GET",
-        success(res) {
-          let questions = res.data.questions
-          console.log(questions)
-          that.setData({
-            questions: questions,
-            tid: options.tid,
-            loading: false //关闭加载
-          })
-        }
+      let topic_id = options.topic_id
+      questionApi.readQuestionsByTopicId(topic_id).then(res => {
+        let questions = res.questions
+        //问题根据类型进行排序
+        questions.sort(function(a,b) {return a.type_id - b.type_id})
+        this.setData({
+          topic_id: topic_id,
+          questions: questions,
+          loading: false,
+        })
       })
     }
     // 问题序号调用
@@ -190,6 +186,7 @@ Page({
       console.log(qids)
       //TODO
     }
+    
   },
 
   /**

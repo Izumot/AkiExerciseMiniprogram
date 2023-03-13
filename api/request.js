@@ -2,6 +2,8 @@
 const statusCode = require('./statusCode')
 // 定义请求路径, BASEURL: 普通请求API; CBASEURL: 中台API,不使用中台可不引入CBASEURL
 const { BASEURL } = require('./config')
+import Message from 'tdesign-miniprogram/message/index';
+
 // 定义默认参数
 const defaultOptions = {
   data: {},

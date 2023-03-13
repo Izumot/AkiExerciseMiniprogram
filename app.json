@@ -35,7 +35,8 @@
     "t-fab": "tdesign-miniprogram/fab/fab",
     "t-loading": "tdesign-miniprogram/loading/loading",
     "t-input": "tdesign-miniprogram/input/input",
-    "t-slider": "tdesign-miniprogram/slider/slider"
+    "t-slider": "tdesign-miniprogram/slider/slider",
+    "t-message": "tdesign-miniprogram/message/message"
   },
   "window": {
     "backgroundTextStyle": "light",

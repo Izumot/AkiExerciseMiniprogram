@@ -4,6 +4,6 @@
 </view>
 <t-cell-group theme="card" title="练习">
   <t-cell title="每日答题" leftIcon="service" url="/pages/exercise/exercise?qid=1,2,3,4,5" hover arrow />
-  <t-cell title="每周测评" leftIcon="service" url="/pages/exercise/exercise?tid=100" hover arrow />
+  <t-cell title="每周测评" leftIcon="service" url="/pages/exercise/exercise?topic_id=1" hover arrow />
   <t-cell title="专项答题" leftIcon="internet" url="/pages/topic/topic" jump-type="switchTab" hover arrow />
 </t-cell-group>

@@ -20,12 +20,14 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    this.getTabBar().init()
+    
     topicApi.readTopics().then(res => {
         console.log(res)
         this.setData({
           categorys: res
         })
+    }).catch(err => {
+      console.log(err)
     })
   },
 
@@ -40,7 +42,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    this.getTabBar().init()
   },
 
   /**
