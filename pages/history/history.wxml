@@ -1,16 +1,23 @@
 <!--pages/history/history.wxml-->
 <wxs module="fn">
   module.exports = {
-    time2str: function(time) {
+    time2str: function (time) {
       return time.split('T')[0] + ' ' + time.split('T')[1].split('.')[0]
     }
   }
 </wxs>
-<t-cell-group wx:for="{{quizzes}}" wx:for-item="quiz">
-  <t-swipe-cell bidn:click="onQuizClick">
-  <t-cell title="{{quiz.quiz_name}}" description="{{fn.time2str(quiz.start_time)}}" note="{{quiz.end_time?'':'继续答题'}}" bordered="{{false}}" hover arrow/>
-  <view slot="right" class="btn delete-btn" bind:tap="onDelete">
-  <t-icon name="delete" size="48rpx"></t-icon>
+<t-cell-group wx:for="{{quizzes}}" wx:for-item="quiz" wx:key="index">
+  <view wx:if="{{quiz.total_score}}">
+    <!--已完成不可删除-->
+    <t-cell title="{{quiz.quiz_name}}" description="{{fn.time2str(quiz.start_time)}}" note="99.99分" bordered="{{false}}" url="/pages/material/material" hover/>
   </view>
-</t-swipe-cell>
+  <view wx:else>
+    <!--未完成可删除-->
+    <t-swipe-cell>
+      <t-cell title="{{'#'+quiz.quiz_id+' '+quiz.quiz_name}}" description="{{fn.time2str(quiz.start_time)}}" note="继续答题" bordered="{{false}}" url="/pages/exercise/exercise?quiz_id={{quiz.quiz_id}}" hover arrow />
+      <view data-id="{{index}}" slot="right" class="btn delete-btn" bind:tap="onDelete">
+        <t-icon name="delete" size="48rpx"></t-icon>
+      </view>
+    </t-swipe-cell>
+  </view>
 </t-cell-group>

@@ -41,10 +41,10 @@ function request(options) {
   }
 
   return new Promise((resolve, reject) => {
-    console.log('request', url,data);
+    console.log('request', url, data);
     wx.request({
-      data,
       url: BASEURL + url,
+      data,
       header,
       method,
       success: (res) => {
@@ -91,6 +91,7 @@ function get(options) {
 
 function post(options) {
   // url, data = {}, ignoreToken, form
+  console.log("post :", options)
   return request({
     method: 'POST',
     ...options
@@ -98,6 +99,7 @@ function post(options) {
 }
 
 function put(options) {
+  console.log("put :", options)
   return request({
     method: 'PUT',
     ...options
@@ -105,6 +107,7 @@ function put(options) {
 }
 
 function del(options) {
+  console.log("delete :", options)
   return request({
     method: 'DELETE',
     ...options

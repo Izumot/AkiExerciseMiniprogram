@@ -2,6 +2,7 @@ const {
   questionApi,
   quizApi
 } = require("../../api/index");
+const question = require("../../api/question");
 
 // pages/exercise/exercise.js
 Page({
@@ -21,7 +22,8 @@ Page({
     touchE: null,
     questions: [],
     userUnswer: [],
-    tag_theme: ["primary", "warning", "danger", "success"]
+    tag_theme: ["primary", "warning", "danger", "success"],
+    option_map:  ['A','B','C','D']
   },
   onVisibleChange(e) {
     this.setData({
@@ -96,7 +98,7 @@ Page({
   },
   submit() {
     console.log("submit")
-    //
+    //提交记录duration
   },
   confirmDialog(e) {
     this.setData({
@@ -136,17 +138,27 @@ Page({
   },
   onRadioChange(event) {
     console.log('radio: ', event.detail);
-    let unswer = "userUnswer[" + this.data.cur + "]"
+    let d = this.data
+    let unswer = "userUnswer[" + d.cur + "]"
     this.setData({
       [unswer]: [event.detail.value]
     })
+    let quiz_id = d.quiz_id
+    let question_id = d.questions[d.cur].question_id
+    let user_answer = d.option_map[event.detail.value]
+    quizApi.updateQuizQuestion(quiz_id, question_id, user_answer)
   },
   onJudgeChange(event) {
     console.log('judge: ', event.detail);
-    let unswer = "userUnswer[" + this.data.cur + "]"
+    let d = this.data
+    let unswer = "userUnswer[" + d.cur + "]"
     this.setData({
       [unswer]: [event.detail.value]
     })
+    let quiz_id = d.quiz_id
+    let question_id = d.questions[d.cur].question_id
+    let user_answer = d.option_map[event.detail.value]
+    quizApi.updateQuizQuestion(quiz_id, question_id, user_answer)
   },
   onCheckBoxChange(event) {
     console.log('checkbox: ', event.detail);
@@ -175,24 +187,57 @@ Page({
       ]: ''
     })
   },
-  
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: async function(options) {
-    console.log("Exercise onLoad")
-    console.log(options)
-    // 专题调用
-    if (options.topic_id) {
-      let topic_id = options.topic_id
-      console.log("topic_id: "+topic_id)
-      const topic = await questionApi.readQuestionsByTopicId(topic_id)
-      let questions = topic.questions
-      let quiz_name = topic.topic_name
-      console.log(topic)
-      let data = {topic_id: topic_id, quiz_name: quiz_name}
-      const quiz = await quizApi.createQuiz(data)
-      let quiz_id = quiz.quiz_id
+  create_topic_page: async function(topic_id){
+    console.log("topic_id: "+topic_id)
+    const topic = await questionApi.readQuestionsByTopicId(topic_id)
+    let questions = topic.questions
+    let quiz_name = topic.topic_name
+    //生成quiz
+    let data = {topic_id: topic_id, quiz_name: quiz_name}
+    const quiz = await quizApi.createQuiz(data)
+    let quiz_id = quiz.quiz_id
+    //问题根据类型进行排序
+    questions.sort(function (a, b) {
+      return a.type_id - b.type_id
+    })
+    //生成quiz questions
+    let question_ids = questions.map(x => x.question_id)
+    console.log(question_ids)
+    await quizApi.createQuizQuestions(quiz_id, question_ids)
+    this.setData({
+      topic_id: topic_id,
+      quiz_id: quiz_id,
+      questions: questions,
+      loading: false,
+      quiz_name: quiz_name
+    })
+  },
+  create_daily_page: async function(daily_num){
+    // 问题序号调用TODO
+    let num = daily_num
+    const questions = await questionApi.readQuestionsDaily(num)
+    let quiz_name = '每日测评' + Date.now()
+    //生成quiz
+    let data = {quiz_name: quiz_name}
+    const quiz = await quizApi.createQuiz(data)
+    let quiz_id = quiz.quiz_id
+    //问题根据类型进行排序
+    questions.sort(function (a, b) {
+      return a.type_id - b.type_id
+    })
+    //生成quiz questions
+    let question_ids = questions.map(x => x.question_id)
+    console.log(question_ids)
+    await quizApi.createQuizQuestions(quiz_id, question_ids)
+    this.setData({
+      quiz_id: quiz_id,
+      questions: questions,
+      loading: false,
+      quiz_name: quiz_name
+    })
+  },
+  create_continue_page: async function(quiz_id){
+      const { topic_id, questions, quiz_name} = await questionApi.readQuestionsByQuizIdWithoutAnswer(quiz_id)
       //问题根据类型进行排序
       questions.sort(function (a, b) {
         return a.type_id - b.type_id
@@ -204,47 +249,57 @@ Page({
         loading: false,
         quiz_name: quiz_name
       })
+      // 加载用户答案
+      console.log(this.data.quiz_id)
+      const quiz_questions = await quizApi.readQuizQuestions(quiz_id)
+      let user_answer = []
+      for (let i = 0; i < quiz_questions.length; i++){
+        let question = quiz_questions[i]
+        if(question.user_answer) {
+          let answers = question.user_answer.split("#").map(x => this.data.option_map.indexOf(x))
+          user_answer.push(answers)
+        } else {
+          user_answer.push([])
+        }
+      }
+      this.setData({
+        userUnswer: user_answer
+      })
+  },
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: async function(options) {
+    console.log("Exercise onLoad")
+    console.log(options)
+    if (options.topic_id) {
+      // 专题调用
+      this.create_topic_page(options.topic_id)
+    }  else if (options.daily_num) {
+      // 每日答题
+      this.create_daily_page(options.daily_num)
+    } else if (options.quiz_id) {
+      // 继续答题
+      this.create_continue_page(options.quiz_id)
     }
-    // 问题序号调用
-    else if (options.daily_num) {
-      let num = options.daily_num
-      questionApi.readQuestionsDaily(num).then(res => {
-        let questions = res
-        let quiz_name = '每日测评' + Date.now()
-        //问题根据类型进行排序
-        questions.sort(function (a, b) {
-          return a.type_id - b.type_id
-        })
-        this.setData({
-          questions: questions,
-          loading: false,
-          quiz_name: quiz_name
-        })
-      }).catch(err => {console.log(err)})
-    }
-    // 加载用户答案
-    //TODO
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady() {
-    console.log("Exercise onReady")
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    console.log("Exercise onShow")
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
   onHide() {
-    console.log("Exercise onHide")
   },
 
   /**
@@ -252,7 +307,6 @@ Page({
    */
   onUnload() {
     console.log("Exercise onUnload")
-    
   },
 
   /**
