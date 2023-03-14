@@ -1,8 +1,11 @@
 <!--pages/material/material.wxml-->
 <!-- <t-fab style="" button-props="{{ {theme:\"danger\"} }}" icon="check"></t-fab> -->
-<t-checkbox-group value="{{[0,1,2]}}">
-  <t-checkbox value="{{0}}" label="AAA"  icon="{{['/asset/close-red.png']}}" readonly/>
-  <t-checkbox value="{{1}}" label="BBB"  icon="line" readonly/>
-  <t-checkbox value="{{2}}" label="CCC"  icon="line" readonly/>
-  <t-checkbox value="{{3}}" label="DDD"  icon="line" readonly/>
+
+<t-checkbox-group t-class="theme-card" default-value="{{[0,1,2,3]}}">
+  <view wx:for="{{options}}" wx:for-item="option" wx:key="index">
+    <t-checkbox wx:if="{{user_answer[index] === 1 && correct_answer[index] === 1}}" value="{{index}}" label="{{option}}" icon="{{icon.right_filled}}" readonly/>
+    <t-checkbox wx:if="{{user_answer[index] === 1 && correct_answer[index] === 0}}" value="{{index}}" label="{{option}}" icon="{{icon.wrong}}" readonly/>
+    <t-checkbox wx:if="{{user_answer[index] === 0 && correct_answer[index] === 1}}" value="{{index}}" label="{{option}}" icon="{{icon.right}}" readonly/>
+    <t-checkbox wx:if="{{user_answer[index] === 0 && correct_answer[index] === 0}}" value="{{index}}" label="{{option}}" icon="{{icon.blank}}" readonly/>
+  </view>
 </t-checkbox-group>

@@ -5,3 +5,8 @@ page {
   --td-button-danger-active-bg-color: #008f5f;
   --td-button-danger-active-border-color: #008f5f;
 }
+.theme-card {
+  border-radius: 24rpx;
+  margin: 32rpx;
+  overflow: hidden;
+}
