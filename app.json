@@ -5,7 +5,9 @@
     "pages/topic/topic",
     "pages/history/history",
     "pages/material/material",
-    "pages/exercise/exercise"
+    "pages/exercise/exercise",
+    "pages/report/report",
+    "pages/help/help"
   ],
   "usingComponents": {
     "t-tab-bar": "tdesign-miniprogram/tab-bar/tab-bar",

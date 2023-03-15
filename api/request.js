@@ -41,7 +41,6 @@ function request(options) {
   }
 
   return new Promise((resolve, reject) => {
-    console.log('request', url, data);
     wx.request({
       url: BASEURL + url,
       data,

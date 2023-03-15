@@ -21,9 +21,9 @@ Page({
     touchS: null,
     touchE: null,
     questions: [],
-    userUnswer: [],
+    userAnswer: [],
     tag_theme: ["primary", "warning", "danger", "success"],
-    option_map:  ['A','B','C','D']
+    option_map: ['A', 'B', 'C', 'D']
   },
   onVisibleChange(e) {
     this.setData({
@@ -84,9 +84,9 @@ Page({
   },
   handleClickSubmit(e) {
     console.log(e)
-    let userUnswer = this.data.userUnswer
+    let userAnswer = this.data.userAnswer
     let len = this.data.questions.length
-    if (userUnswer.length == len && userUnswer.every((i) => !!i)) {
+    if (userAnswer.length == len && userAnswer.every((i) => !!i)) {
       //答案都不为空
       this.submit()
     } else {
@@ -136,64 +136,91 @@ Page({
       })
     }
   },
-  onRadioChange(event) {
-    console.log('radio: ', event.detail);
+  chooseAnswerChange(answer, type) {
     let d = this.data
-    let unswer = "userUnswer[" + d.cur + "]"
-    this.setData({
-      [unswer]: [event.detail.value]
-    })
+    let index = "userAnswer[" + d.cur + "]"
     let quiz_id = d.quiz_id
     let question_id = d.questions[d.cur].question_id
-    let user_answer = d.option_map[event.detail.value]
-    quizApi.updateQuizQuestion(quiz_id, question_id, user_answer)
+    switch (type) {
+      case "judge":
+        //判断
+        //和单选题逻辑一致
+      case "radio":
+        //单选
+        this.setData({
+          [index]: [answer]
+        })
+        // answer: B
+        // radio_answer: B
+        let radio_answer = answer
+        quizApi.updateQuizQuestion(quiz_id, question_id, radio_answer)
+        break;
+      case "checkbox":
+        //多选
+        this.setData({
+          [index]: answer
+        })
+        // answer: ['A','B','C']
+        // checkbox_answer: "A#B#C"
+        let checkbox_answer = answer.join('#')
+        quizApi.updateQuizQuestion(quiz_id, question_id, checkbox_answer)
+        break;
+      default:
+        break;
+    }
+  },
+  onRadioChange(event) {
+    console.log('radio: ', event.detail);
+    let answer = event.detail.value
+    this.chooseAnswerChange(answer, "radio")
   },
   onJudgeChange(event) {
     console.log('judge: ', event.detail);
-    let d = this.data
-    let unswer = "userUnswer[" + d.cur + "]"
-    this.setData({
-      [unswer]: [event.detail.value]
-    })
-    let quiz_id = d.quiz_id
-    let question_id = d.questions[d.cur].question_id
-    let user_answer = d.option_map[event.detail.value]
-    quizApi.updateQuizQuestion(quiz_id, question_id, user_answer)
+    let answer = event.detail.value
+    this.chooseAnswerChange(answer, "judge")
   },
   onCheckBoxChange(event) {
     console.log('checkbox: ', event.detail);
-    let unswer = "userUnswer[" + this.data.cur + "]"
+    let answer = event.detail.value
+    this.chooseAnswerChange(answer, "checkbox")
+  },
+  inputAnswerChange(input_index, input_value) {
+    let d = this.data
+    let quiz_id = d.quiz_id
+    let question_id = d.questions[d.cur].question_id
+
+    let blank_index = "userAnswer[" + d.cur + "][" + input_index + "]"
+    let blank_answer = input_value
     this.setData({
-      [unswer]: event.detail.value
+      [
+        [blank_index]
+      ]: blank_answer
     })
+    let answer = d.userAnswer[d.cur]
+    let input_answer = answer.join("#")
+    quizApi.updateQuizQuestion(quiz_id, question_id, input_answer)
   },
   onInputChange(e) {
     console.log("input: ", e.currentTarget.dataset)
-    let index = e.currentTarget.dataset.index
-    let unswer = "userUnswer[" + this.data.cur + "][" + index + "]"
-    this.setData({
-      [
-        [unswer]
-      ]: e.detail.value
-    })
+    let input_index = e.currentTarget.dataset.index
+    let input_value = e.detail.value
+    this.inputAnswerChange(input_index, input_value)
   },
   onInputClear(e) {
     console.log("input clear: ", e.currentTarget.dataset)
-    let index = e.currentTarget.dataset.index
-    let unswer = "userUnswer[" + this.data.cur + "][" + index + "]"
-    this.setData({
-      [
-        [unswer]
-      ]: ''
-    })
+    let input_index = e.currentTarget.dataset.index
+    this.inputAnswerChange(input_index, '')
   },
-  create_topic_page: async function(topic_id){
-    console.log("topic_id: "+topic_id)
+  createTopicPage: async function (topic_id) {
+    console.log("topic_id: " + topic_id)
     const topic = await questionApi.readQuestionsByTopicId(topic_id)
     let questions = topic.questions
     let quiz_name = topic.topic_name
     //生成quiz
-    let data = {topic_id: topic_id, quiz_name: quiz_name}
+    let data = {
+      topic_id: topic_id,
+      quiz_name: quiz_name
+    }
     const quiz = await quizApi.createQuiz(data)
     let quiz_id = quiz.quiz_id
     //问题根据类型进行排序
@@ -212,13 +239,15 @@ Page({
       quiz_name: quiz_name
     })
   },
-  create_daily_page: async function(daily_num){
+  createDailyPage: async function (daily_num) {
     // 问题序号调用TODO
     let num = daily_num
     const questions = await questionApi.readQuestionsDaily(num)
     let quiz_name = '每日测评' + Date.now()
     //生成quiz
-    let data = {quiz_name: quiz_name}
+    let data = {
+      quiz_name: quiz_name
+    }
     const quiz = await quizApi.createQuiz(data)
     let quiz_id = quiz.quiz_id
     //问题根据类型进行排序
@@ -236,71 +265,75 @@ Page({
       quiz_name: quiz_name
     })
   },
-  create_continue_page: async function(quiz_id){
-      const { topic_id, questions, quiz_name} = await questionApi.readQuestionsByQuizIdWithoutAnswer(quiz_id)
-      //问题根据类型进行排序
-      questions.sort(function (a, b) {
-        return a.type_id - b.type_id
-      })
-      this.setData({
-        topic_id: topic_id,
-        quiz_id: quiz_id,
-        questions: questions,
-        loading: false,
-        quiz_name: quiz_name
-      })
-      // 加载用户答案
-      console.log(this.data.quiz_id)
-      const quiz_questions = await quizApi.readQuizQuestions(quiz_id)
-      let user_answer = []
-      for (let i = 0; i < quiz_questions.length; i++){
-        let question = quiz_questions[i]
-        if(question.user_answer) {
-          let answers = question.user_answer.split("#").map(x => this.data.option_map.indexOf(x))
-          user_answer.push(answers)
-        } else {
-          user_answer.push([])
-        }
+  createContinuePage: async function (quiz_id) {
+    const {
+      topic_id,
+      questions,
+      quiz_name
+    } = await questionApi.readQuestionsByQuizIdWithoutAnswer(quiz_id)
+    //问题根据类型进行排序
+    questions.sort(function (a, b) {
+      return a.type_id - b.type_id
+    })
+    this.setData({
+      topic_id: topic_id,
+      quiz_id: quiz_id,
+      questions: questions,
+      loading: false,
+      quiz_name: quiz_name
+    })
+    // 加载用户答案
+    console.log(this.data.quiz_id)
+    const quiz_questions = await quizApi.readQuizQuestions(quiz_id)
+    let user_answer = []
+    let first_unanswer_cur = null
+    for (let i = 0; i < quiz_questions.length; i++) {
+      let question = quiz_questions[i]
+      if (question.user_answer) {
+        let answers = question.user_answer.split("#")
+        user_answer.push(answers)
+      } else {
+        if (!first_unanswer_cur) first_unanswer_cur = i
+        user_answer.push([])
       }
-      this.setData({
-        userUnswer: user_answer
-      })
+    }
+    this.setData({
+      userAnswer: user_answer,
+      cur: first_unanswer_cur
+    })
   },
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: async function(options) {
+  onLoad: async function (options) {
     console.log("Exercise onLoad")
     console.log(options)
     if (options.topic_id) {
       // 专题调用
-      this.create_topic_page(options.topic_id)
-    }  else if (options.daily_num) {
+      this.createTopicPage(options.topic_id)
+    } else if (options.daily_num) {
       // 每日答题
-      this.create_daily_page(options.daily_num)
+      this.createDailyPage(options.daily_num)
     } else if (options.quiz_id) {
       // 继续答题
-      this.create_continue_page(options.quiz_id)
+      this.createContinuePage(options.quiz_id)
     }
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady() {
-  },
+  onReady() {},
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow() {
-  },
+  onShow() {},
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide() {
-  },
+  onHide() {},
 
   /**
    * 生命周期函数--监听页面卸载
